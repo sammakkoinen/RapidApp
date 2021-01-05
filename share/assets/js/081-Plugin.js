@@ -667,9 +667,8 @@ Ext.ux.RapidApp.Plugin.GridQuickSearch = Ext.extend(Ext.util.Observable, {
 				iconCls: 'ra-icon-information',
 				hideOnClick: false,
 				handler: this.showAboutMenuDialog,
-        scope:this 
-			},
-      
+        scope:this
+			}
 		);
 		
 		// Only enable the new 'outerMenu' if allow_set_quicksearch_mode is true:
