@@ -62,6 +62,7 @@ around 'inject_asset_controllers' => sub {
       controller => 'Assets::RapidApp::CSS',
       type => 'CSS',
       include => $share_dir . '/assets/css',
+      include_regex => '\.css$',
     },
     {
       controller => 'Assets::RapidApp::CSS::ScopedReset',
@@ -79,6 +80,7 @@ around 'inject_asset_controllers' => sub {
       controller => 'Assets::RapidApp::JS',
       type => 'JS',
       include => $share_dir . '/assets/js',
+      include_regex => '\.js$',
     },
     {
       controller => 'Assets::RapidApp::Icons',
@@ -141,12 +143,14 @@ around 'inject_asset_controllers' => sub {
       controller => 'Assets::Local::CSS',
       type => 'CSS',
       include => "$dir/css",
+      include_regex => '\.css$',
     } if (-d $dir->subdir('css'));
     
     push @$assets, {
       controller => 'Assets::Local::JS',
       type => 'JS',
       include => "$dir/js",
+      include_regex => '\.js$',
     } if (-d $dir->subdir('js'));
     
     push @$assets, {
