@@ -87,7 +87,7 @@ sub DEFAULT_PROFILES {{
       #mode: 'combo', 'menu' or 'cycle':
       mode => 'menu',
     
-      render_icon_only => 1,
+      #render_icon_only => 1,
     
       selections => [
         {
