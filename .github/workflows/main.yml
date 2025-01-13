@@ -7,8 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check out repository
-      uses: actions/checkout@v4
-    - uses: jonasbn/github-action-perl-dist-zilla@0.5.5
+      uses: actions/checkout@v3
+    - name: Run dzil build
+      uses: jonasbn/github-action-perl-dist-zilla@0.5.5
       with:
         # Arguments for dzil
         dzil-arguments: 'build' # default is help
