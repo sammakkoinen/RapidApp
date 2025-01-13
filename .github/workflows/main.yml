@@ -8,6 +8,8 @@ jobs:
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
+      with:
+          set-safe-directory: '*'
     - name: Run dzil build
       uses: jonasbn/github-action-perl-dist-zilla@0.5.5
       with:
