@@ -559,6 +559,7 @@ sub redirect_handle_rest_rel_request {
     # ---
 
     %{$c->req->params} = ( %$p, base_params => $self->json->encode( $p ) );
+    local $c->{request_id} = $c->request_id + 0.01;
     $c->root_module_controller->approot($c,$url);
     return $c->detach;
   }
@@ -576,6 +577,7 @@ sub redirect_handle_rest_rel_request {
       # Simulate the rest_args for proper handling of the remote DbicLink
       # request to operate under the current, alias URL:
       $self->c->stash->{rest_args} = [$RelObj->getRestKey,$RelObj->getRestKeyVal];
+      local $c->{request_id} = $c->request_id + 0.01;
       $c->root_module_controller->approot($c,$url);
       return $c->detach;
     }
@@ -797,7 +799,11 @@ sub read_records {
   my $Rs2 = $self->_chain_search_rs($Rs,undef, { result_class => 'DBIx::Class::ResultClass::HashRefInflator' });
     
   my $rows;
+  my $schema= $Rs->result_source->schema;
+  $schema->on_datastor_query_begin($self, $Rs)
+    if $schema->can('on_datastor_query_begin');
   try {
+
     my $start = [gettimeofday];
     
     # -----
@@ -833,7 +839,8 @@ sub read_records {
   };
   
   $self->calculate_column_summaries($ret,$Rs,$params) unless($self->single_record_fetch);
-  
+  $schema->on_datastor_query_end($self, $Rs, $ret)
+    if $schema->can('on_datastor_query_end');
   return $ret;
 }
 
