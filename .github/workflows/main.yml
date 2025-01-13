@@ -11,7 +11,7 @@ jobs:
       with:
           set-safe-directory: '*'
     - name: Set git config
-      run: git config --system --add safe.directory /github/workspace
+      run: git config --local --add safe.directory /github/workspace
     - name: Run dzil build
       uses: jonasbn/github-action-perl-dist-zilla@0.5.5
       with:
