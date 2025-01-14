@@ -1,7 +1,6 @@
-name: GitHub Action for Perl's Dist::Zilla
+name: dzil build
 on: workflow_dispatch
-  # You may pin to the exact commit or the version.
-  # uses: jonasbn/github-action-perl-dist-zilla@01860e3a8c930215800438444376d347a4ac1787
+  # See the real fix in https://github.com/actions/runner-images/issues/6775
 jobs:
   dzil:
     runs-on: ubuntu-latest
