@@ -58,7 +58,7 @@ has 'role_checker', is => 'ro', isa => 'Maybe[CodeRef]', default => sub {
     # users configured (i.e. it could be based on ip address, header, etc)
     return $c && $c->can('check_any_user_role') ? $c->check_any_user_role(@_) : 1;
   }
-};
+}, lazy => 0;
 
 sub BUILD {
   my $self = shift;

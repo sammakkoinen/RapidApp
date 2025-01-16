@@ -74,7 +74,10 @@ sub setJsonBody {
 	
 	my $encoding= $c->stash->{encoding} || $self->encoding;
 	my $rct= $c->stash->{requestContentType};
-	
+
+    $DB::single=1;
+    # This does not use json_encode_utf8, uses
+    # JSON::PP::PP_encode_json, which internally uses utf8::upgrade
 	(!ref $json) or $json= $self->encoder->encode($json);
 	
 	$c->res->header('Cache-Control' => 'no-cache');
@@ -93,7 +96,8 @@ sub setJsonBody {
 		);
 	}
 	else {
-		$c->res->content_type("text/javascript; charset=$encoding");
+        #$c->res->encodable_content_type(qr{text|xml$}); # Commenting this out fixes wide char bug; possibly, when this line is on, body is subject to utf8::encode at HTTP/Server/PSGI.pm:309
+		$c->res->content_type("application/javascript; charset=$encoding");
 		$c->res->body($json);
 	}
 }

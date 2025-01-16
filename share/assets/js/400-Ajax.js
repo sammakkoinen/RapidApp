@@ -317,7 +317,7 @@ Ext.ux.AutoPanel = Ext.extend(Ext.Panel, {
           var cont_parts = content_type.split(';');
           
           // Expected content-type returned by a RapidApp module:
-          if(cont_parts[0] == 'text/javascript') {
+          if(cont_parts[0] == 'text/javascript' || cont_parts[0] == 'application/javascript') {
             try {
               conf = Ext.decode(response.responseText);
             }
