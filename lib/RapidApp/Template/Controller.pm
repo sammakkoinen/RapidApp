@@ -470,8 +470,8 @@ sub view :Chained('base') :Args {
 
     $DB::single=1;
     # This is doing the same thing that the overly complex 'Module' controller does:
-    $content_type = 'application/json; charset=utf-8';
-    #$c->res->encodable_content_type(qr{text|xml$});
+    $content_type = 'text/javascript; charset=utf-8';
+    $c->res->encodable_content_type(qr{text(?!/javascript)|xml$});
     $output = encode_json_utf8($cnf);
   }
   else {
