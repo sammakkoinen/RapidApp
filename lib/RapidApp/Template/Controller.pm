@@ -470,9 +470,8 @@ sub view :Chained('base') :Args {
 
     $DB::single=1;
     # This is doing the same thing that the overly complex 'Module' controller does:
-    $content_type = 'application/javascript; charset=utf-8';
-    $c->res->encodable_content_type(qr{text|xml$});
-    #$Catalyst::Response::DEFAULT_ENCODE_CONTENT_TYPE_MATCH = qr{text|xml$};
+    $content_type = 'application/json; charset=utf-8';
+    #$c->res->encodable_content_type(qr{text|xml$});
     $output = encode_json_utf8($cnf);
   }
   else {
@@ -549,7 +548,7 @@ sub view :Chained('base') :Args {
   # TODO/FIXME: back-compat force utf8 since removing code which sets content_type
   # this is being done this way to match previous (pre 1.3105) code as close as possible
   # this still needs to be revisited
-  # utf8::decode($output);
+  utf8::decode($output);
   # $output = Encode::encode("UTF-8", $output);
   # ----
 
