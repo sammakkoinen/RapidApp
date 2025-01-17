@@ -96,7 +96,11 @@ sub setJsonBody {
 		);
 	}
 	else {
-        $c->res->encodable_content_type(qr{text(?!/javascript)|xml$}); # Commenting this out fixes wide char bug; possibly, when this line is on, body is subject to utf8::encode at HTTP/Server/PSGI.pm:309
+        # Commenting out the following line fixes wide char bug;
+        # possibly, when this line is on, body is subject to
+        # utf8::encode at HTTP/Server/PSGI.pm:309; but for MM this
+        # line is required
+        $c->res->encodable_content_type(qr{text(?!/javascript)|xml$});
 		$c->res->content_type("text/javascript; charset=$encoding");
 		$c->res->body($json);
 	}
