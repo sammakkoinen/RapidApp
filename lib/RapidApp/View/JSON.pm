@@ -79,6 +79,8 @@ sub setJsonBody {
     # This does not use json_encode_utf8, uses
     # JSON::PP::PP_encode_json, which internally uses utf8::upgrade
 	(!ref $json) or $json= $self->encoder->encode($json);
+
+    utf8::decode($json);
 	
 	$c->res->header('Cache-Control' => 'no-cache');
 	
