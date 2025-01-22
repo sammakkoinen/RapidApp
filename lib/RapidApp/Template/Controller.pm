@@ -468,7 +468,6 @@ sub view :Chained('base') :Args {
       $cnf->{template_controller_url} = '/' . $self->action_namespace($c);
     }
 
-    $DB::single=1;
     # This is doing the same thing that the overly complex 'Module' controller does:
     $content_type = 'text/javascript; charset=utf-8';
     $c->res->encodable_content_type(qr{text(?!/javascript)|xml$});
