@@ -74,9 +74,14 @@ sub setJsonBody {
 	
 	my $encoding= $c->stash->{encoding} || $self->encoding;
 	my $rct= $c->stash->{requestContentType};
-	
+
+    # This does not use json_encode_utf8, uses
+    # JSON::PP::PP_encode_json, which internally uses utf8::upgrade.
+    # At this moment the data returned from Rapi::Fs are non-utf-8
 	(!ref $json) or $json= $self->encoder->encode($json);
-	
+    # And here they are utf-8
+    utf8::decode($json);
+
 	$c->res->header('Cache-Control' => 'no-cache');
 	
 	if ($rct eq 'text/x-rapidapp-form-response') {
@@ -93,6 +98,9 @@ sub setJsonBody {
 		);
 	}
 	else {
+        if (!utf8::is_utf8($json)) { # encoding not needed for non-UTF-8 text
+            $c->res->encodable_content_type(qr{text(?!/javascript)|xml$});
+        }
 		$c->res->content_type("text/javascript; charset=$encoding");
 		$c->res->body($json);
 	}

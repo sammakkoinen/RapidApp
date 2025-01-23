@@ -467,9 +467,11 @@ sub view :Chained('base') :Args {
       push @{$cnf->{plugins}}, 'template-controller-panel';
       $cnf->{template_controller_url} = '/' . $self->action_namespace($c);
     }
-    
+
     # This is doing the same thing that the overly complex 'Module' controller does:
     $content_type = 'text/javascript; charset=utf-8';
+    # Disable encoding of text/javascript by Catalyst, since it will be encoded in encode_json_utf8
+    $c->res->encodable_content_type(qr{text(?!/javascript)|xml$});
     $output = encode_json_utf8($cnf);
   }
   else {
