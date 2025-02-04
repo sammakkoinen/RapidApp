@@ -21,6 +21,7 @@ use URI::Escape;
 use Scalar::Util qw(looks_like_number);
 use Digest::SHA1;
 use DateTime;
+use Tie::IxHash;
 require Module::Runtime; 
 require RapidApp::DBIC::Component::TableSpec;
 
@@ -1808,6 +1809,17 @@ sub _chain_search_rs {
     join => $self->_recurse_clean_empty_hashrefs($attr->{join})
   } if ($attr->{join});
   # --
+
+  my %ordered_join;
+  tie %ordered_join, 'Tie::IxHash';
+  if ($attr->{as} && ref $attr->{as} eq 'ARRAY') {
+      foreach (@{$attr->{as}}) {
+          if (/^([^_]+)__/ && !exists $ordered_join{$1} && exists $attr->{join}{$1}) {
+              $ordered_join{$1} = $attr->{join}{$1};
+          }
+      }
+  }
+  $attr->{join} = \%ordered_join;
 
   $Rs->search_rs($cond,$attr)
 }
