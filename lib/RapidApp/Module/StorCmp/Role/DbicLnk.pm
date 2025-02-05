@@ -1814,7 +1814,7 @@ sub _chain_search_rs {
   tie %ordered_join, 'Tie::IxHash';
   if ($attr->{as} && ref $attr->{as} eq 'ARRAY') {
       foreach (@{$attr->{as}}) {
-          if (/^([^_]+)__/ && !exists $ordered_join{$1} && exists $attr->{join}{$1}) {
+          if (/^(.+?)__/ && !exists $ordered_join{$1} && exists $attr->{join}{$1}) {
               $ordered_join{$1} = $attr->{join}{$1};
           }
       }
