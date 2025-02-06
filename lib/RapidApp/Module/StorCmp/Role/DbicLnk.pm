@@ -761,6 +761,8 @@ sub get_read_records_Rs {
   
   # Apply multifilter:
   $Rs = $self->chain_Rs_req_multifilter($Rs,$params);
+
+  # Re-ordering of joins must be done here?
   
   return $Rs;
 }
@@ -1810,16 +1812,38 @@ sub _chain_search_rs {
   } if ($attr->{join});
   # --
 
-  my %ordered_join;
-  tie %ordered_join, 'Tie::IxHash';
-  if ($attr->{as} && ref $attr->{as} eq 'ARRAY') {
-      foreach (@{$attr->{as}}) {
-          if (/^(.+?)__/ && !exists $ordered_join{$1} && exists $attr->{join}{$1}) {
-              $ordered_join{$1} = $attr->{join}{$1};
+  if ($attr->{join} && ref $attr->{join} eq 'HASH'
+          && !exists $Rs->{attrs}{join} && keys %{$attr->{join}}) {
+      if ($attr->{as} && ref $attr->{as} eq 'ARRAY') {
+          my %ordered_join;
+          tie %ordered_join, 'Tie::IxHash';
+          my %as_map = map { $_ => 1 } grep { $_ !~ /__/ } @{$attr->{as}};
+          my @rest;
+          foreach (@{$attr->{as}}) {
+              # 'order__status__name' -> 'status'
+              my @parts = split '__';
+              if (@parts > 2 && $as_map{$parts[-2]}) {
+                  if (!exists $ordered_join{$parts[0]} && exists $attr->{join}{$parts[0]}) {
+                      $ordered_join{$parts[0]} = $attr->{join}{$parts[0]};
+                  }
+              }
+              elsif (@parts == 2 && $as_map{$parts[0]}) {
+                  if (!exists $ordered_join{$parts[0]} && exists $attr->{join}{$parts[0]}) {
+                      $ordered_join{$parts[0]} = $attr->{join}{$parts[0]};
+                  }
+              }
+              elsif (@parts == 2) {
+                  if (!exists $ordered_join{$parts[0]} && exists $attr->{join}{$parts[0]}) {
+                      push @rest, $parts[0];
+                  }
+              }
           }
+          foreach (@rest) {
+              $ordered_join{$_} = $attr->{join}{$_} unless exists $ordered_join{$_};
+          }
+          $attr->{join} = \%ordered_join;
       }
   }
-  $attr->{join} = \%ordered_join;
 
   $Rs->search_rs($cond,$attr)
 }
