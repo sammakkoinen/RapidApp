@@ -1822,18 +1822,11 @@ sub _chain_search_rs {
           foreach (@{$attr->{as}}) {
               # 'order__status__name' -> 'status'
               my @parts = split '__';
-              if (@parts > 2 && $as_map{$parts[-2]}) {
-                  if (!exists $ordered_join{$parts[0]} && exists $attr->{join}{$parts[0]}) {
+              if (@parts > 1 && !exists $ordered_join{$parts[0]} && exists $attr->{join}{$parts[0]}) {
+                  if ((@parts > 2 && $as_map{$parts[-2]}) or $as_map{$parts[0]}) {
                       $ordered_join{$parts[0]} = $attr->{join}{$parts[0]};
                   }
-              }
-              elsif (@parts == 2 && $as_map{$parts[0]}) {
-                  if (!exists $ordered_join{$parts[0]} && exists $attr->{join}{$parts[0]}) {
-                      $ordered_join{$parts[0]} = $attr->{join}{$parts[0]};
-                  }
-              }
-              elsif (@parts == 2) {
-                  if (!exists $ordered_join{$parts[0]} && exists $attr->{join}{$parts[0]}) {
+                  else { # @parts == 2
                       push @rest, $parts[0];
                   }
               }
