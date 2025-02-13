@@ -6,6 +6,7 @@ use warnings;
 use 5.010;
 
 our $VERSION = '1.3302';
+our $BUILD = '__BUILD_ID__';
 
 # ABSTRACT: Turnkey ajaxy webapps
 
